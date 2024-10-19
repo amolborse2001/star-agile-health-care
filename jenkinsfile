@@ -29,16 +29,16 @@ pipeline {
          sh 'docker build -t cbabu85/healthcare:1.0 .'
                          }
            }
-    stage('login to Dockerhub') {
+    stage('Login to Dockerhub') {
     steps {
-        echo 'This stage will compile, test, package my application'
+        echo 'Logging into Dockerhub'
         withCredentials([usernamePassword(credentialsId: 'Dockerlogin', passwordVariable: 'docker-pass', usernameVariable: 'docker-login')]) {
-            sh 'echo $docker-pass | docker login -u $docker-login --password-stdin .'
+            sh "echo \$docker-pass | docker login -u \$docker-login --password-stdin"
         }
     }
 }
-           }
-  } 
+ }
+    } 
      stage('Docker Push-Image') {
        steps {
         echo 'This stage will push my new image to the dockerhub'
