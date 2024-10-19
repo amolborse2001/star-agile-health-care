@@ -15,7 +15,7 @@ pipeline {
         
         stage('Create Package') {
             steps {
-                echo 'This stage will compile, test, package my application'
+                echo 'This stage will compile, test, and package my application'
                 sh 'mvn package'
             }
         }
@@ -23,10 +23,16 @@ pipeline {
         stage('Generate Test Report') {
             steps {
                 echo 'This stage generates a test report using TestNG'
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, 
-                             reportDir: 'target/surefire-reports', reportFiles: 'index.html', 
-                             reportName: 'HTML Report', reportTitles: '', 
-                             useWrapperFileDirectly: true])
+                publishHTML([
+                    allowMissing: false, 
+                    alwaysLinkToLastBuild: false, 
+                    keepAll: false, 
+                    reportDir: 'target/surefire-reports', 
+                    reportFiles: 'index.html', 
+                    reportName: 'HTML Report', 
+                    reportTitles: '', 
+                    useWrapperFileDirectly: true
+                ])
             }
         }
         
@@ -38,17 +44,18 @@ pipeline {
         }
         
         stage('Login to Dockerhub') {
-    steps {
-        echo 'Logging into Dockerhub'
-        // Use direct username and password for troubleshooting
-        sh "echo 'amol142001' | docker login -u 'amol2001' --password-stdin"
-    }
-}
-                }
+            steps {
+                echo 'Logging into Dockerhub'
+                // Directly using username and password for troubleshooting
+                sh "echo 'amol142001' | docker login -u 'amol2001' --password-stdin"
             }
+        }
+        
         stage('Docker Push-Image') {
             steps {
                 echo 'This stage will push my new image to Dockerhub'
                 sh 'docker push cbabu85/healthcare:1.0'
             }
         }
+    }
+}
