@@ -38,19 +38,17 @@ pipeline {
         }
         
         stage('Login to Dockerhub') {
-            steps {
-                echo 'Logging into Dockerhub'
-                withCredentials([usernamePassword(credentialsId: 'Dockerlogin', passwordVariable: 'docker-pass', usernameVariable: 'docker-login')]) {
-                    sh "echo \$docker-pass | docker login -u \$docker-login --password-stdin"
+    steps {
+        echo 'Logging into Dockerhub'
+        // Use direct username and password for troubleshooting
+        sh "echo 'amol142001' | docker login -u 'amol2001' --password-stdin"
+    }
+}
                 }
             }
-        }
-        
         stage('Docker Push-Image') {
             steps {
                 echo 'This stage will push my new image to Dockerhub'
                 sh 'docker push cbabu85/healthcare:1.0'
             }
         }
-    }
-}
