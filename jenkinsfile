@@ -45,5 +45,3 @@ pipeline {
         sh 'docker push  cbabu85/healthcare:1.0'
   }
  }
-}
-}
