@@ -65,7 +65,7 @@ pipeline {
 
         stage('AWS Login') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentials', credentialsId: 'awsaccess']]) {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'awsaccess']]) {
                     echo 'AWS credentials are set'
                     // Verify the AWS credentials
                     sh 'aws sts get-caller-identity' // This command verifies the credentials
