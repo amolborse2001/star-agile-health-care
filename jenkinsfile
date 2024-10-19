@@ -39,7 +39,7 @@ pipeline {
         stage('Create Docker Image') {
             steps {
                 echo 'This stage will create a Docker image'
-                sh 'docker build -t cbabu85/healthcare:1.0 .'
+                sh 'docker build -t amol2001/healthcare:1.0 .'
             }
         }
         
@@ -54,7 +54,7 @@ pipeline {
         stage('Docker Push-Image') {
             steps {
                 echo 'This stage will push my new image to Dockerhub'
-                sh 'docker push cbabu85/healthcare:1.0'
+                sh 'docker push amol2001/healthcare:1.0'
             }
         }
     }
