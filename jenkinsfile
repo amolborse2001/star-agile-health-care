@@ -6,9 +6,9 @@ pipeline {
     }
 
     environment {
-        // Ensure these are correct; update IDs if necessary
-        AWS_ACCESS_KEY_ID = credentials('awsaccess')  // Use the correct ID
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key') // Ensure this is also correct
+        // Using the correct credential ID for both AWS keys
+        AWS_ACCESS_KEY_ID = credentials('awsaccess')
+        AWS_SECRET_ACCESS_KEY = credentials('awsaccess') // Ensure this is correct
     }
 
     stages {
@@ -65,9 +65,9 @@ pipeline {
 
         stage('AWS Login') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentials', credentialsId: 'Awsaccess']]) {
+                withCredentials([[$class: 'AmazonWebServicesCredentials', credentialsId: 'awsaccess']]) {
                     echo 'AWS credentials are set'
-                    // This is a good place to check if credentials work
+                    // Verify the AWS credentials
                     sh 'aws sts get-caller-identity' // This command verifies the credentials
                 }
             }
