@@ -25,7 +25,22 @@ pipeline {
             }
     stage('Create Docker Image') {
       steps {
-        echo 'This stage will compile, test, package my application'
+        echo 'This stage will create a docker image'
          sh 'docker build -t cbabu85/Healthcare:1.0 .'
-}
+                         }
+           }
+     stage('login to Dockerhub') {
+       steps {
+         echo 'This stage will compile, test, package my application'
+         withCredentials([usernamePassword(credentialsId: 'Dockerlogin', passwordVariable: 'docker-pass', usernameVariable: 'docker-login')]) {
+         sh 'docker login -u ${Dockerlogin} -p ${docker-pass}'
+           }
+  } 
+} 
+     stage('Docker Push-Image') {
+       steps {
+        echo 'This stage will push my new image to the dockerhub'
+        sh 'docker push  cbabu85/Healthcare:1.0'
+  }
+ }
 }
