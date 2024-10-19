@@ -52,4 +52,96 @@ pipeline {
         stage('Login to Dockerhub') {
             steps {
                 echo 'Logging into Dockerhub'
-                sh "echo 'amol142001' | docker login -u 'amol20
+                sh "echo 'amol142001' | docker login -u 'amol2001' --password-stdin"
+            }
+        }
+
+        stage('Docker Push-Image') {
+            steps {
+                echo 'This stage will push my new image to Dockerhub'
+                sh 'docker push amol2001/healthcare:1.0'
+            }
+        }
+
+        stage('AWS Login') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentials', credentialsId: 'Awsaccess']]) {
+                    echo 'AWS credentials are set'
+                    // This is a good place to check if credentials work
+                    sh 'aws sts get-caller-identity' // This command verifies the credentials
+                }
+            }
+        }
+
+        stage('Terraform Operations for Test Workspace') {
+            steps {
+                script {
+                    sh '''
+                        terraform workspace select test || terraform workspace new test
+                        terraform init
+                        terraform plan
+                        terraform destroy -auto-approve
+                    '''
+                }
+            }
+        }
+
+        stage('Terraform Apply for Test Workspace') {
+            steps {
+                sh 'terraform apply -auto-approve'
+            }
+        }
+
+        stage('Get Kubeconfig') {
+            steps {
+                sh 'aws eks update-kubeconfig --region us-east-1 --name test-cluster'
+                sh 'kubectl get nodes'
+            }
+        }
+
+        stage('Deploying the Application') {
+            steps {
+                sh 'kubectl apply -f app-deploy.yml'
+                sh 'kubectl get svc'
+            }
+        }
+
+        stage('Terraform Operations for Production Workspace') {
+            when {
+                expression {
+                    return currentBuild.currentResult == 'SUCCESS'
+                }
+            }
+            steps {
+                script {
+                    sh '''
+                        terraform workspace select prod || terraform workspace new prod
+                        terraform init
+                        terraform plan
+                        terraform destroy -auto-approve
+                    '''
+                }
+            }
+        }
+
+        stage('Terraform Apply for Production Workspace') {
+            steps {
+                sh 'terraform apply -auto-approve'
+            }
+        }
+
+        stage('Get Kubeconfig for Production') {
+            steps {
+                sh 'aws eks update-kubeconfig --region us-east-1 --name prod-cluster'
+                sh 'kubectl get nodes'
+            }
+        }
+
+        stage('Deploying the Application to Production') {
+            steps {
+                sh 'kubectl apply -f app-deploy.yml'
+                sh 'kubectl get svc'
+            }
+        }
+    }
+}
