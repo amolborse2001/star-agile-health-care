@@ -1,13 +1,23 @@
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "3.14.1"
+  version = "~> 4.0"
 
-  name              = local.vpc_name
-  cidr              = local.vpc_cidr
-  azs               = local.availability_zones
-  public_subnets    = local.public_subnets
-  private_subnets   = local.private_subnets
-  intra_subnets     = local.intra_subnets
+  name = local.name
+  cidr = local.vpc_cidr
 
-  tags = local.tags
+  azs             = local.azs
+  private_subnets = local.private_subnets
+  public_subnets  = local.public_subnets
+  intra_subnets   = local.intra_subnets
+
+  enable_nat_gateway = true
+  map_public_ip_on_launch = true
+
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+  }
 }
