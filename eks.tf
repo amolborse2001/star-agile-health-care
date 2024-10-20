@@ -1,35 +1,10 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
-locals {
-  name = "my-eks-cluster"
-}
-
-module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
-  version = "3.14.0"
-
-  name = local.name
-  cidr = "10.123.0.0/16"
-
-  azs              = ["us-east-1a", "us-east-1b"]
-  public_subnets   = ["10.123.1.0/24", "10.123.2.0/24"]
-  private_subnets  = ["10.123.3.0/24", "10.123.4.0/24"]
-  intra_subnets    = ["10.123.5.0/24", "10.123.6.0/24"]
-
-  tags = {
-    Name = local.name
-  }
-}
-
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   version         = "19.15.1"
 
-  cluster_name    = local.name
-  cluster_endpoint_public_access = true
-  
+  cluster_name                      = local.eks_name
+  cluster_endpoint_public_access    = true
+
   cluster_addons = {
     coredns = {
       most_recent = true
@@ -69,7 +44,7 @@ module "eks" {
   }
 
   tags = {
-    Name = local.name
+    Name        = local.eks_name
     Environment = "dev"
   }
 }
