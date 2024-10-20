@@ -1,9 +1,9 @@
 locals {
-  **eks_name**          = "your-eks-name"  # Ensure this matches the vpc_name if intended
-  **eks_cluster_version** = "1.21"          # Adjust as needed
-  **eks_node_group_name** = "your-node-group" # Change as necessary
-  **eks_subnet_ids**    = module.vpc.private_subnets  # Use the VPC module's private subnets
-  **eks_tags** = {
+  eks_name          = "your-eks-name"  # Ensure this matches the vpc_name if intended
+  eks_cluster_version = "1.21"          # Adjust as needed
+  eks_node_group_name = "your-node-group" # Change as necessary
+  eks_subnet_ids    = module.vpc.private_subnets  # Use the VPC module's private subnets
+  eks_tags = {
     Name        = local.eks_name
     Environment = "dev"  # Adjust as necessary
   }
