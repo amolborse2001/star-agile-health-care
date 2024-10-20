@@ -1,5 +1,5 @@
 locals {
-  eks_name              = "your-eks-name"  # Ensure this matches the vpc_name if intended
+  eks_name              = "your-eks-name"  # Ensure this matches your intended name
   eks_cluster_version    = "1.21"           # Adjust as needed
   eks_node_group_name    = "your-node-group" # Change as necessary
   eks_subnet_ids        = module.vpc.private_subnets  # Use the VPC module's private subnets
@@ -36,13 +36,13 @@ resource "aws_iam_role_policy_attachment" "eks_policy" {
 resource "aws_iam_role" "eks_node_role" {
   name = "${local.eks_name}-node-role"
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"  # Correctly spelled
+    Version = "2012-10-17"
     Statement = [
       {
         Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          Service = "ec2.amazonaws.com"  # Ensure this is correct for node groups
+          Service = "ec2.amazonaws.com"
         }
       },
     ]
