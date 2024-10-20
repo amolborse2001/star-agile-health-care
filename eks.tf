@@ -1,7 +1,7 @@
 locals {
   eks_name           = "my-eks-cluster"
-  vpc_name           = "your-vpc-name"
-  vpc_cidr           = "10.0.0.0/16"
+  vpc_name           = "your-vpc-name"  # Ensure this matches the VPC name
+  vpc_cidr           = "10.0.0.0/16"     # Align with VPC CIDR
   availability_zones = ["us-east-1a", "us-east-1b"]
   public_subnets     = ["10.0.1.0/24"]
   private_subnets    = ["10.0.2.0/24"]
@@ -11,20 +11,6 @@ locals {
     Name        = local.vpc_name
     Environment = "dev"
   }
-}
-
-module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
-  version = "3.14.1"
-
-  name              = local.vpc_name
-  cidr              = local.vpc_cidr
-  azs               = local.availability_zones
-  public_subnets    = local.public_subnets
-  private_subnets   = local.private_subnets
-  intra_subnets     = local.intra_subnets
-
-  tags = local.tags
 }
 
 module "eks" {
