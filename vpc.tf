@@ -1,14 +1,14 @@
 locals {
-  vpc_name           = "your-vpc-name"  # Replace with your desired VPC name
+  vpc_name           = "your-vpc-name"  # Ensure this matches the eks_name if intended
   vpc_cidr           = "10.0.0.0/16"     # Adjust CIDR block as needed
-  availability_zones = ["us-east-1a", "us-east-1b"]  # Specify your desired availability zones
-  public_subnets     = ["10.0.1.0/24"]   # Add your public subnet CIDR
-  private_subnets    = ["10.0.2.0/24"]   # Add your private subnet CIDR
-  intra_subnets      = []                 # Define intra-subnets if needed
+  availability_zones = ["us-east-1a", "us-east-1b"]  # Match with EKS availability zones
+  public_subnets     = ["10.0.1.0/24"]   # Define your public subnet CIDR
+  private_subnets    = ["10.0.2.0/24"]   # Define your private subnet CIDR
+  intra_subnets      = ["10.123.5.0/24", "10.123.6.0/24"]  # Align with EKS intra subnets
 
   tags = {
     Name        = local.vpc_name
-    Environment = "dev"  # Change as necessary
+    Environment = "dev"  # Adjust as necessary
   }
 }
 
