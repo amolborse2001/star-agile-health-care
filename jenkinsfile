@@ -6,9 +6,8 @@ pipeline {
     }
 
     environment {
-        // Using the correct credential ID for both AWS keys
         AWS_ACCESS_KEY_ID = credentials('awsaccess')
-        AWS_SECRET_ACCESS_KEY = credentials('awsaccess') // Ensure this is correct
+        AWS_SECRET_ACCESS_KEY = credentials('awsaccess')
     }
 
     stages {
@@ -109,7 +108,7 @@ pipeline {
         stage('Terraform Operations for Production Workspace') {
             when {
                 expression {
-                    return currentBuild.currentResult == 'SUCCESS'
+                    return false // Skip this step
                 }
             }
             steps {
@@ -125,12 +124,22 @@ pipeline {
         }
 
         stage('Terraform Apply for Production Workspace') {
+            when {
+                expression {
+                    return false // Skip this step
+                }
+            }
             steps {
                 sh 'terraform apply -auto-approve'
             }
         }
 
         stage('Get Kubeconfig for Production') {
+            when {
+                expression {
+                    return false // Skip this step
+                }
+            }
             steps {
                 sh 'aws eks update-kubeconfig --region us-east-1 --name prod-cluster'
                 sh 'kubectl get nodes'
@@ -138,6 +147,11 @@ pipeline {
         }
 
         stage('Deploying the Application to Production') {
+            when {
+                expression {
+                    return false // Skip this step
+                }
+            }
             steps {
                 sh 'kubectl apply -f app-deploy.yml'
                 sh 'kubectl get svc'
